@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head><title>Car Rental</title></head>
+<body>
+    <h1>Available Cars</h1>
+    <div id="car-list"></div>
+
+    <script>
+        fetch("get_cars.php").then(res => res.json()).then(cars => {
+            document.getElementById("car-list").innerHTML = cars.map(car =>
+                `<div>
+                    <h3>${car.name} (${car.model})</h3>
+                    <p>$${car.price_per_day}/day</p>
+                    <button onclick="bookCar(${car.id})">Book</button>
+                </div>`).join("");
+        });
+
+        function bookCar(carId) {
+            let startDate = prompt("Enter start date (YYYY-MM-DD):");
+            let endDate = prompt("Enter end date (YYYY-MM-DD):");
+
+            fetch("book.php", {
+                method: "POST",
+                body: new URLSearchParams({ car_id: carId, start_date: startDate, end_date: endDate })
+            }).then(res => res.text()).then(alert);
+        }
+    </script>
+</body>
+</html>
